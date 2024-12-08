@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Vendas</title>
+    <link rel="stylesheet" href="styles/historico_vendas.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Título da Página -->
+        <h1>Histórico de Vendas</h1>
+
+        <!-- Barra de Pesquisa -->
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Pesquisar por Nome, CPF ou Telefone">
+            <button id="search-btn">Pesquisar</button>
+        </div>
+
+        <!-- Lista de Vendas -->
+        <div class="sales-list">
+            <!-- Cada cliente será exibido como uma box clicável -->
+            <div class="sales-box" onclick="verDetalhes('Samuel Lima')">
+                <p class="client-name">Samuel Lima</p>
+                <p class="sale-date">15/02/2023 09:32</p>
+            </div>
+
+            <div class="sales-box" onclick="verDetalhes('Maria Silva')">
+                <p class="client-name">Maria Silva</p>
+                <p class="sale-date">18/02/2023 14:15</p>
+            </div>
+
+            <!-- Mais boxes podem ser adicionadas dinamicamente -->
+        </div>
+    </div>
+
+    <script>
+        // Função para redirecionar para os detalhes da venda
+        function verDetalhes(cliente) {
+            alert("Redirecionando para os detalhes de " + cliente);
+            // Aqui, redirecione para a página de detalhes com o cliente selecionado
+        }
+
+        // Implementação básica de pesquisa
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+        const salesBoxes = document.querySelectorAll('.sales-box');
+
+        searchBtn.addEventListener('click', () => {
+            const query = searchInput.value.toLowerCase();
+            salesBoxes.forEach(box => {
+                const name = box.querySelector('.client-name').textContent.toLowerCase();
+                if (name.includes(query)) {
+                    box.style.display = 'block'; // Mostra a box correspondente
+                } else {
+                    box.style.display = 'none'; // Esconde as que não correspondem
+                }
+            });
+        });
+    </script>
+</body>
+</html>
