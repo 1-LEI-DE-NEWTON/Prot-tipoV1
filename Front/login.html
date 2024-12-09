@@ -9,9 +9,9 @@
 <body>
     <div class="login-container">
         <h1>Bem-vindo!</h1>
-        <form action="/login" method="POST">
+        <form id="login-form">
             <div class="input-group">
-                <label for="username">Nome de usuário ou E-mail:</label>
+                <label for="username">Nome de usuário ou e-mail:</label>
                 <input type="text" id="username" name="username" placeholder="Digite seu usuário ou e-mail" required>
             </div>
             <div class="input-group password-group">
@@ -40,5 +40,8 @@
             }
         }
     </script>
+   
+    <script src = "scripts/api.js"></script>
+    <script src="scripts/login.js"></script>
 </body>
 </html>

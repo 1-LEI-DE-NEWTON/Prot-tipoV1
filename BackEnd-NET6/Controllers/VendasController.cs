@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BackEnd_NET6.Controllers
 {
     [ApiController]
-    
+    //[Authorize]
     public class VendasController : Controller
     {
         private readonly I_Venda_Service _vendaService;
@@ -26,6 +26,7 @@ namespace BackEnd_NET6.Controllers
         {
             if (string.IsNullOrEmpty(vendaDTO.NomeCliente) ||
             string.IsNullOrEmpty(vendaDTO.Telefone) ||
+            string.IsNullOrEmpty(vendaDTO.Email) ||
             string.IsNullOrEmpty(vendaDTO.CPF) ||
             string.IsNullOrEmpty(vendaDTO.RG) ||
             string.IsNullOrEmpty(vendaDTO.CEP) ||
@@ -42,7 +43,9 @@ namespace BackEnd_NET6.Controllers
                 try
                 {
                     _vendaService.AdicionarVenda(vendaDTO);
-                    return Ok("Venda adicionada com sucesso");
+                    return Ok( new{
+                        mensagem = "Venda adicionada com sucesso"
+                    });
                 }
                 catch (Exception e)
                 {

@@ -19,6 +19,7 @@ namespace BackEnd_NET6.Services
             var venda = new Venda
             {
                 NomeCliente = vendaDTO.NomeCliente,
+                Email = vendaDTO.Email,
                 Telefone = vendaDTO.Telefone,
                 CPF = vendaDTO.CPF,
                 RG = vendaDTO.RG,                                
@@ -35,6 +36,7 @@ namespace BackEnd_NET6.Services
             {
                 _context.Vendas.Add(venda);
                 _context.SaveChanges();
+                
             }
             catch (Exception e)
             {

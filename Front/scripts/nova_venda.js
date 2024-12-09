@@ -1,29 +1,33 @@
-document.getElementById('venda-form').addEventListener('submit', function(e) {
-    e.preventDefault();
+document.getElementById("nova-venda-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
     
     // Coletar os dados do formulário
-    const produto = document.getElementById('produto').value;
-    const quantidade = document.getElementById('quantidade').value;
-    const preco = document.getElementById('preco').value;
-    const desconto = document.getElementById('desconto').value || 0;
-
-    // Verificação simples
-    if (!produto || !quantidade || !preco) {
-        alert('Por favor, preencha todos os campos obrigatórios!');
-        return;
-    }
-
-    // Exemplo de como os dados poderiam ser enviados via API
-    // Aqui você pode usar fetch() para enviar dados ao backend (FastAPI ou outro)
-    const dadosVenda = {
-        produto,
-        quantidade,
-        preco,
-        desconto
+    const venda = {
+        nomeCliente: document.getElementById('nome_cliente').value,
+        telefone: document.getElementById('telefone').value,
+        email: document.getElementById('email').value,
+        cpf: document.getElementById('cpf').value,
+        rg: document.getElementById('rg').value,
+        dataNascimento: document.getElementById('data_nascimento').value,
+        cep: document.getElementById('cep').value,
+        endereco: document.getElementById('endereco').value,
+        numero: document.getElementById('numero').value,
+        complemento: document.getElementById('complemento').value,
+        dataVencimento: document.getElementById('data_vencimento').value    
     };
 
-    console.log(dadosVenda); // Aqui você pode substituir por uma chamada fetch, por exemplo
-
-    // Limpar o formulário após submissão
-    document.getElementById('venda-form').reset();
+    // Validar os dados do formulário
+    if (Object.values(venda).some(value => value === "")) {
+        alert("Preencha todos os campos!");
+        return;
+    }
+    
+    // Enviar os dados para a API
+    try {
+        await apiRequest("vendas/adicionar", "POST", venda);
+        alert("Venda cadastrada com sucesso!");
+        window.location.href = "menu_inicial.html";                        
+    } catch (error) {
+        alert("Erro ao cadastrar a venda! " + error.message);
+    }
 });
