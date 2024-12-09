@@ -1,18 +1,22 @@
 ﻿using BackEnd_NET6.Data;
 using BackEnd_NET6.Models.DTOs;
+using BackEnd_NET6.Services;
+using BackEnd_NET6.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackEnd_NET6.Controllers
 {
     [ApiController]
+    
     public class VendasController : Controller
     {
-        private readonly VendaContext _context;
+        private readonly I_Venda_Service _vendaService;
 
-        public VendasController(VendaContext context)
+        public VendasController(I_Venda_Service vendaService)
         {
-            _context = context;
-        }
+            _vendaService = vendaService;
+        }        
 
         [HttpPost]
 
@@ -37,7 +41,7 @@ namespace BackEnd_NET6.Controllers
             {
                 try
                 {
-                    AdicionarVenda(vendaDTO);
+                    _vendaService.AdicionarVenda(vendaDTO);
                     return Ok("Venda adicionada com sucesso");
                 }
                 catch (Exception e)
@@ -53,34 +57,34 @@ namespace BackEnd_NET6.Controllers
 
         public IActionResult ListarVendas()
         {
-            return Ok(ListarVendas());
+            return Ok(_vendaService.ListarVendas());
         }
 
         [HttpGet]
 
-        [Route("api/search/{nome}")]
+        [Route("api/search/nome/{nome}")]
 
         public IActionResult PesquisarVendasPorNome(string nome)
         {
-            return Ok(PesquisarVendasPorNome(nome));
+            return Ok(_vendaService.PesquisarVendasPorNome(nome));
         }
 
         [HttpGet]
 
-        [Route("api/search/{cpf}")]
+        [Route("api/search/cpf/{cpf}")]
 
         public IActionResult PesquisarVendaPorCPF(string cpf)
         {
-            return Ok(PesquisarVendaPorCPF(cpf));
+            return Ok(_vendaService.PesquisarVendaPorCPF(cpf));
         }
 
         [HttpGet]
 
-        [Route("api/search/{telefone}")]
+        [Route("api/search/telefone/{telefone}")]
 
         public IActionResult PesquisarVendaPorTelefone(string telefone)
         {
-            return Ok(PesquisarVendaPorTelefone(telefone));
+            return Ok(_vendaService.PesquisarVendaPorTelefone(telefone));
         }
         
                     

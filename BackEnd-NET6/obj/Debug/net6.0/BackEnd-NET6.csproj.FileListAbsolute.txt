@@ -52,3 +52,10 @@ C:\Users\TKFir\OneDrive\Estudos\TI\Programação\Códigos\ProtótipoV1\BackEnd-N
 C:\Users\TKFir\OneDrive\Estudos\TI\Programação\Códigos\ProtótipoV1\BackEnd-NET6\bin\Debug\net6.0\System.Text.Encodings.Web.dll
 C:\Users\TKFir\OneDrive\Estudos\TI\Programação\Códigos\ProtótipoV1\BackEnd-NET6\bin\Debug\net6.0\System.Text.Json.dll
 C:\Users\TKFir\OneDrive\Estudos\TI\Programação\Códigos\ProtótipoV1\BackEnd-NET6\bin\Debug\net6.0\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll
+C:\Users\TKFir\OneDrive\Estudos\TI\Programação\Códigos\ProtótipoV1\BackEnd-NET6\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\TKFir\OneDrive\Estudos\TI\Programação\Códigos\ProtótipoV1\BackEnd-NET6\bin\Debug\net6.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\TKFir\OneDrive\Estudos\TI\Programação\Códigos\ProtótipoV1\BackEnd-NET6\bin\Debug\net6.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\TKFir\OneDrive\Estudos\TI\Programação\Códigos\ProtótipoV1\BackEnd-NET6\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\TKFir\OneDrive\Estudos\TI\Programação\Códigos\ProtótipoV1\BackEnd-NET6\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\TKFir\OneDrive\Estudos\TI\Programação\Códigos\ProtótipoV1\BackEnd-NET6\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\TKFir\OneDrive\Estudos\TI\Programação\Códigos\ProtótipoV1\BackEnd-NET6\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll

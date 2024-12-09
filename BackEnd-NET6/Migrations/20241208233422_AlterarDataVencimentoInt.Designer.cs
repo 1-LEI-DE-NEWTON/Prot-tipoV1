@@ -3,6 +3,7 @@ using System;
 using BackEnd_NET6.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackEnd_NET6.Migrations
 {
     [DbContext(typeof(VendaContext))]
-    partial class VendaContextModelSnapshot : ModelSnapshot
+    [Migration("20241208233422_AlterarDataVencimentoInt")]
+    partial class AlterarDataVencimentoInt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,8 +59,8 @@ namespace BackEnd_NET6.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateOnly>("DataNascimento")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("DataNascimento")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("DataVencimento")
                         .HasColumnType("int");

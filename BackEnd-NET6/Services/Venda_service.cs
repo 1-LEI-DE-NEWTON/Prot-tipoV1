@@ -1,10 +1,11 @@
 ﻿using BackEnd_NET6.Data;
 using BackEnd_NET6.Models;
 using BackEnd_NET6.Models.DTOs;
+using BackEnd_NET6.Services.Interfaces;
 
 namespace BackEnd_NET6.Services
 {
-    public class Venda_service
+    public class Venda_service : I_Venda_Service
     {
         private readonly VendaContext _context;
 

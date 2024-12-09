@@ -2,6 +2,6 @@
 {
     public interface I_JWT_Service
     {
-        string GenerateJwtToken(string username, IList<string> roles);        
+        string GenerateJwtToken(string username);        
     }
 }

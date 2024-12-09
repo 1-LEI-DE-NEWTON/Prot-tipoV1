@@ -15,25 +15,39 @@ namespace BackEnd_NET6.Services
             _config = config;
         }
 
-        public string GenerateJwtToken(string username, IList<string> roles)
-        {
+        public string GenerateJwtToken(string username)
+        {            
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, username)
             };
-
-            foreach (var role in roles)
+            
+            // Validação do tamanho da chave
+            var key = Encoding.UTF8.GetBytes(_config["Jwt:Key"]);
+            if (key.Length < 16)
             {
-                claims.Add(new Claim(ClaimTypes.Role, role));
+                throw new ArgumentOutOfRangeException("Jwt:Key", "A chave deve ter pelo menos 16 caracteres.");
             }
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var symmmetricKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            
+            if (symmmetricKey == null)
+            {
+                throw new Exception("Chave de segurança inválida");
+            }
+            
+            if (symmmetricKey.KeySize < 128)
+            {
+                throw new ArgumentOutOfRangeException("Tamanho da chave inválido");
+            }
 
-            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
-                _config["Jwt:Issuer"],
+            var creds = new SigningCredentials(symmmetricKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _config["Jwt:Issuer"],
+                audience: _config["Jwt:Audience"],
                 claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.Now.AddHours(1),
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
