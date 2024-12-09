@@ -1,11 +1,11 @@
 const API_URL = "https://localhost:7223/api";
-let jwtToken = "";
+let jwtToken = localStorage.getItem("jwtToken") || "";
 
 // Função para realizar chamadas autenticadas à API
 async function apiRequest(endpoint, method = "GET", body = null) {
     const headers = {
         "Content-Type": "application/json",
-        //"Authorization": `Bearer ${jwtToken}`
+        "Authorization": `Bearer ${jwtToken}`
     };
 
     const options = { method, headers };
@@ -17,21 +17,25 @@ async function apiRequest(endpoint, method = "GET", body = null) {
     const response = await fetch(`${API_URL}/${endpoint}`, options);
 
     if (response.ok) {
-        try{
+        try {
             return await response.json();
-        }
-        catch(error){
+        } catch (error) {
             console.error(`Erro na requisição para ${endpoint}:`, error);
-            throw new Error("Erro na  " + error);
-        }
-        
-    } else {
+            throw new Error("Erro: " + error);
+        }        
+    } else if (response.status === 401) {
+     // Token expirado ou inválido
+     console.error("Token expirado ou inválido. Redirecionando para a página de login.");
+     localStorage.removeItem("jwtToken");
+     jwtToken = "";
+     window.location.href = "/login";
+    }    
+    else {
         console.error(`Erro na requisição para ${endpoint}:`, response.status);
-        throw new Error("Erro na  " + response.status);
+        throw new Error("Status: " + response.status);
     }
 }
 
-// Função para login (obter JWT)
 async function login(username, password) {
     const response = await fetch(`${API_URL}/login`, {
         method: "POST",
@@ -42,6 +46,7 @@ async function login(username, password) {
     if (response.ok) {
         const data = await response.json();
         jwtToken = data.token;
+        localStorage.setItem("jwtToken", jwtToken); // Armazenar o token no localStorage
         return data;
     } else {
         throw new Error("Falha no login");

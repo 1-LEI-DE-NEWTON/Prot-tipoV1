@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BackEnd_NET6.Controllers
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class VendasController : Controller
     {
         private readonly I_Venda_Service _vendaService;
