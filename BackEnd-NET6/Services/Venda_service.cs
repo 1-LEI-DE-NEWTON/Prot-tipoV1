@@ -52,9 +52,25 @@ namespace BackEnd_NET6.Services
         //Pesquisar vendas por nome do cliente
         public List<Venda> PesquisarVendasPorNome(string nome)
         {
+            if (string.IsNullOrEmpty(nome))
+            {
+                return null;
+            }
+            
             return _context.Vendas
                            .Where(v => v.NomeCliente.Contains(nome))
                            .ToList();
+        }
+
+        public Venda PesquisarVendaPorId(int id)
+        {
+            if (id <= 0 || id == null)
+            {
+                return null;
+            }
+            
+            return _context.Vendas
+                           .FirstOrDefault(v => v.Id == id);
         }
 
         //Pesquisar venda por CPF

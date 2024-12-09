@@ -10,5 +10,6 @@ namespace BackEnd_NET6.Services.Interfaces
         List<Venda> PesquisarVendasPorNome(string nome);
         Venda PesquisarVendaPorCPF(string cpf);
         Venda PesquisarVendaPorTelefone(string telefone);
+        Venda PesquisarVendaPorId(int id);
     }
 }
