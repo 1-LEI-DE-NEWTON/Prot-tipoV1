@@ -13,9 +13,12 @@ namespace BackEnd_NET6.Controllers
     {
         private readonly I_Venda_Service _vendaService;
 
-        public VendasController(I_Venda_Service vendaService)
+        private readonly I_Validar_CPF_Service _validar_CPF_Service;
+
+        public VendasController(I_Venda_Service vendaService, I_Validar_CPF_Service validar_CPF_Service)
         {
             _vendaService = vendaService;
+            _validar_CPF_Service = validar_CPF_Service;
         }        
 
         [HttpPost]
@@ -36,10 +39,17 @@ namespace BackEnd_NET6.Controllers
             {
                 return BadRequest("Todos os campos são obrigatórios");
             }
-            
-            
+                        
             else
             {
+
+                if (!_validar_CPF_Service.Validar_CPF(vendaDTO.CPF))
+                {
+                    return BadRequest(new{
+                            mensagem = "CPF inválido"
+                        });
+                }
+                
                 try
                 {
                     _vendaService.AdicionarVenda(vendaDTO);
@@ -79,6 +89,44 @@ namespace BackEnd_NET6.Controllers
         public IActionResult PesquisarVendaPorCPF(string cpf)
         {
             return Ok(_vendaService.PesquisarVendaPorCPF(cpf));
+        }
+
+        [HttpGet]
+        [Route("api/validate/cpf/{cpf}")]
+
+        public IActionResult ValidarCPF(string cpf)
+        {
+            try
+            {
+                //Valida o CPF usando o 4devs
+                HttpClient client = new HttpClient();
+                client.BaseAddress = new Uri("https://www.4devs.com.br/");
+
+                var payload = new Dictionary<string, string>
+                {
+                    { "acao", "validar_cpf" },
+                    { "txt_cpf", cpf }
+                };
+
+                var content = new FormUrlEncodedContent(payload);
+
+                var response = client.PostAsync("ferramentas_online.php", content).Result;
+
+                var responseString = response.Content.ReadAsStringAsync().Result;                
+
+                if (responseString.Contains("Verdadeiro"))
+                {
+                    return Ok(new { mensagem = "CPF válido" });
+                }
+                else
+                {
+                    return BadRequest(new { mensagem = "CPF inválido" });
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Erro ao validar CPF: " + e.Message);
+            }
         }
 
         [HttpGet]

@@ -28,6 +28,11 @@ document.getElementById("nova-venda-form").addEventListener("submit", async (eve
         alert("Venda cadastrada com sucesso!");
         window.location.href = "menu_inicial.html";                        
     } catch (error) {
+        if (error.message.includes("CPF inválido")) {
+            alert("CPF inválido! Por favor, verifique o CPF informado.");
+        }
+        else{
         alert("Erro ao cadastrar a venda! " + error.message);
+        }
     }
 });

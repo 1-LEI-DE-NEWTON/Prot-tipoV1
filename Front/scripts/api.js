@@ -29,8 +29,9 @@ async function apiRequest(endpoint, method = "GET", body = null) {
      window.location.href = "login.html";
     }    
     else {
-        console.error(`Erro na requisição para ${endpoint}:`, response.status);
-        throw new Error("Status: " + response.status);
+        const errorMessage = await response.text();
+        console.error(`Erro na requisição para ${endpoint}:`, response.status, errorMessage);        
+        throw new Error("Erro: " + errorMessage + "\nStatus: " + response.status);
     }
 }
 
