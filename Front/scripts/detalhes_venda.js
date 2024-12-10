@@ -29,6 +29,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
+/*
+async function carregarStatusVenda(idVenda) {
+    try {
+        const response = await fetch(`/status-venda/${idVenda}`);
+        const data = await response.json();
+        document.getElementById("status").innerText = data.status; 
+    } catch (error) {
+        console.error("Erro ao carregar status:", error);
+    }
+}
+    //Polling
+setInterval(() => carregarStatusVenda(1), 5000);  // Substitua "1" pelo ID da venda real
+
+*/
+
 // Função para alternar entre modo de edição e somente-leitura
 function toggleEditMode() {
     const inputs = document.querySelectorAll('.details-container input');
