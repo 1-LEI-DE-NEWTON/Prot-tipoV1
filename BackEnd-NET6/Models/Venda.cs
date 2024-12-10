@@ -17,6 +17,16 @@ namespace BackEnd_NET6.Models
         public string Endereco { get; set; }
         public string Numero { get; set; }
         public string Complemento { get; set; }
-        public int DataVencimento { get; set; }        
+        public int DataVencimento { get; set; }
+        
+        public StatusVenda Status { get; set; }
+    }
+
+    public enum StatusVenda
+    {
+        Aguardando = 0,
+        Concluída = 1,
+        EmProcessamento = 2,
+        Error = 3
     }
 }
