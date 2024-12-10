@@ -7,16 +7,14 @@
     <link rel="stylesheet" href="styles/detalhes_venda.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Botão de Editar -->
+    <div class="container">        
         <div class="header">
             <button class="btn-editar" onclick="toggleEditMode()">Editar</button>
         </div>
 
         <!-- Título da Página -->
         <h1>Detalhes da Venda</h1>
-
-        <!-- Informações -->
+        
         <div class="details-container">
             <div class="form-group">
                 <label for="nome_cliente">Nome Cliente</label>
@@ -76,26 +74,7 @@
         </div>
     </div>
 
-    <script>
-        // Função para alternar entre modo de edição e somente-leitura
-        function toggleEditMode() {
-            const inputs = document.querySelectorAll('.details-container input');
-            const editButton = document.querySelector('.btn-editar');
-            const isReadOnly = inputs[0].hasAttribute('readonly');
-
-            inputs.forEach(input => {
-                if (isReadOnly) {
-                    input.removeAttribute('readonly'); // Torna editável
-                    input.style.backgroundColor = 'white'; // Cor normal
-                } else {
-                    input.setAttribute('readonly', 'readonly'); // Torna somente leitura
-                    input.style.backgroundColor = '#e9ecef'; // Cor cinza
-                }
-            });
-
-            // Alterna o texto do botão entre "Editar" e "Salvar"
-            editButton.textContent = isReadOnly ? 'Salvar' : 'Editar';
-        }
-    </script>
+    <script src="scripts/api.js"></script>
+    <script src="scripts/detalhes_venda.js" ></script>
 </body>
 </html>

@@ -48,8 +48,7 @@ namespace BackEnd_NET6.Services
         {
             return _context.Vendas.ToList();
         }
-
-        //Pesquisar vendas por nome do cliente
+        
         public List<Venda> PesquisarVendasPorNome(string nome)
         {
             if (string.IsNullOrEmpty(nome))
@@ -72,8 +71,7 @@ namespace BackEnd_NET6.Services
             return _context.Vendas
                            .FirstOrDefault(v => v.Id == id);
         }
-
-        //Pesquisar venda por CPF
+        
         public Venda PesquisarVendaPorCPF(string cpf)
         {
             if (string.IsNullOrEmpty(cpf))
@@ -84,7 +82,7 @@ namespace BackEnd_NET6.Services
             return _context.Vendas
                            .FirstOrDefault(v => v.CPF == cpf);
         }
-        //Pesquisar por Telefone
+                
         public Venda PesquisarVendaPorTelefone(string telefone)
         {
             if (string.IsNullOrEmpty(telefone))

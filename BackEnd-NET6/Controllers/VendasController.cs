@@ -90,6 +90,14 @@ namespace BackEnd_NET6.Controllers
             return Ok(_vendaService.PesquisarVendaPorTelefone(telefone));
         }
         
+        [HttpGet]
+
+        [Route("api/search/id/{id}")]
+
+        public IActionResult PesquisarVendaPorId(int id)
+        {
+            return Ok(_vendaService.PesquisarVendaPorId(id));
+        }
                     
     }
 }

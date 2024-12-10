@@ -6,7 +6,7 @@ document.getElementById("login-form").addEventListener("submit", async (event) =
     try {
         await login(username, password);
         alert("Login realizado com sucesso!");
-        window.location.href = "menu_inicial.html"; // Redireciona para o menu
+        window.location.href = "menu_inicial.html";
     } catch (error) {
         alert("Erro ao fazer login: " + error.message);
     }
