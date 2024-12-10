@@ -63,13 +63,13 @@ body {
     border-radius: 5px;
     font-size: 16px;
     color: #666;
-    background-color: #e9ecef; /* Cor cinza para indicar somente leitura */
-    pointer-events: none; /* Evita interação desnecessária */
+    background-color: #e9ecef; 
+    pointer-events: none; 
 }
 
 .details-container input:focus {
     outline: none;
-    border-color: #007bff; /* Indica foco apenas no modo editável */
+    border-color: #007bff; 
 }
 
 .input-container {
