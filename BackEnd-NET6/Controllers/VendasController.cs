@@ -146,6 +146,45 @@ namespace BackEnd_NET6.Controllers
         {
             return Ok(_vendaService.PesquisarVendaPorId(id));
         }
-                    
+
+        [HttpPut]
+
+        [Route("api/vendas/atualizar/{id}")]
+
+        public IActionResult AtualizarVenda(int id, [FromBody] VendaDTO vendaDTO)
+        {
+            if (string.IsNullOrEmpty(vendaDTO.NomeCliente) ||
+            string.IsNullOrEmpty(vendaDTO.Telefone) ||                        
+            string.IsNullOrEmpty(vendaDTO.Email) ||
+            string.IsNullOrEmpty(vendaDTO.CPF) ||
+            string.IsNullOrEmpty(vendaDTO.RG) ||
+            string.IsNullOrEmpty(vendaDTO.CEP) ||
+            string.IsNullOrEmpty(vendaDTO.Endereco) ||
+            string.IsNullOrEmpty(vendaDTO.Numero) ||
+            string.IsNullOrEmpty(vendaDTO.Complemento))
+            {
+                return BadRequest("Todos os campos são obrigatórios");
+            }
+            else
+            {
+                if (!_validar_CPF_Service.Validar_CPF(vendaDTO.CPF))
+                {
+                    return BadRequest(new{
+                            mensagem = "CPF inválido"
+                        });
+                }
+                try
+                {
+                    _vendaService.AtualizarVenda(id, vendaDTO);
+                    return Ok(new{
+                        mensagem = "Venda atualizada com sucesso"
+                    });
+                }
+                catch (Exception e)
+                {
+                    return BadRequest("Erro ao atualizar venda: " + e.Message);
+                }
+            }
+        }                    
     }
 }

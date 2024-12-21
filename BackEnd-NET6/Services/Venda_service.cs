@@ -94,43 +94,37 @@ namespace BackEnd_NET6.Services
                            .FirstOrDefault(v => v.Telefone == telefone);
         }
 
-        public void AtualizarVenda(Venda venda)
+        public void AtualizarVenda(int id, VendaDTO vendaDTO)
         {
+            var venda = _context.Vendas.FirstOrDefault(v => v.Id == id);
+
             if (venda == null)
             {
                 throw new Exception("Venda não encontrada");
-            }            
+            }
 
-            var vendaDB = _context.Vendas
-                                  .FirstOrDefault(v => v.Id == venda.Id);
-
-            if (vendaDB == null)
-            {
-                throw new Exception("Venda não encontrada");
-            }            
-
-            vendaDB.NomeCliente = venda.NomeCliente;
-            vendaDB.Email = venda.Email;
-            vendaDB.Telefone = venda.Telefone;
-            vendaDB.IsWhatsApp = venda.IsWhatsApp;
-            vendaDB.CPF = venda.CPF;
-            vendaDB.RG = venda.RG;
-            vendaDB.DataNascimento = venda.DataNascimento;
-            vendaDB.CEP = venda.CEP;
-            vendaDB.Endereco = venda.Endereco;
-            vendaDB.Numero = venda.Numero;
-            vendaDB.Complemento = venda.Complemento;
-            vendaDB.DataVencimento = venda.DataVencimento;
+            venda.NomeCliente = vendaDTO.NomeCliente;
+            venda.Email = vendaDTO.Email;
+            venda.Telefone = vendaDTO.Telefone;
+            venda.IsWhatsApp = vendaDTO.IsWhatsApp;
+            venda.CPF = vendaDTO.CPF;
+            venda.RG = vendaDTO.RG;
+            venda.DataNascimento = vendaDTO.DataNascimento.Date;
+            venda.CEP = vendaDTO.CEP;
+            venda.Endereco = vendaDTO.Endereco;
+            venda.Numero = vendaDTO.Numero;
+            venda.Complemento = vendaDTO.Complemento;
+            venda.DataVencimento = vendaDTO.DataVencimento;
 
             try
             {
+                _context.Vendas.Update(venda);
                 _context.SaveChanges();
             }
             catch (Exception e)
             {
                 throw new Exception("Erro ao atualizar venda: " + e.Message);
             }
-                                            
         }
     }        
 }
