@@ -12,5 +12,7 @@ namespace BackEnd_NET6.Services.Interfaces
         Venda PesquisarVendaPorTelefone(string telefone);
         Venda PesquisarVendaPorId(int id);
         void AtualizarVenda(int id, VendaDTO vendaDTO);
+        void AtualizarStatusVenda(int id, StatusVenda status);        
+        List<Venda> ListarVendasNaFila();        
     }
 }

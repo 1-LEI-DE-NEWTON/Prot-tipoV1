@@ -126,5 +126,34 @@ namespace BackEnd_NET6.Services
                 throw new Exception("Erro ao atualizar venda: " + e.Message);
             }
         }
+
+        public void AtualizarStatusVenda(int id, StatusVenda status)
+        {
+            var venda = _context.Vendas.FirstOrDefault(v => v.Id == id);
+
+            if (venda == null)
+            {
+                throw new Exception("Venda não encontrada");
+            }
+
+            venda.Status = status;
+
+            try
+            {
+                _context.Vendas.Update(venda);
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Erro ao atualizar status da venda: " + e.Message);
+            }
+        }
+
+        public List<Venda> ListarVendasNaFila()
+        {
+            return _context.Vendas
+                            .Where(v => v.Status == 0)
+                            .ToList();                                                                                        
+        }
     }        
 }

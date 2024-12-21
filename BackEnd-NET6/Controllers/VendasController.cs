@@ -28,7 +28,7 @@ namespace BackEnd_NET6.Controllers
         public IActionResult AdicionarVenda([FromBody] VendaDTO vendaDTO)
         {
             if (string.IsNullOrEmpty(vendaDTO.NomeCliente) ||
-            string.IsNullOrEmpty(vendaDTO.Telefone) ||                        
+            string.IsNullOrEmpty(vendaDTO.Telefone) ||                    
             string.IsNullOrEmpty(vendaDTO.Email) ||
             string.IsNullOrEmpty(vendaDTO.CPF) ||
             string.IsNullOrEmpty(vendaDTO.RG) ||
