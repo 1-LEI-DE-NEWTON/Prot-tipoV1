@@ -1,9 +1,13 @@
 ﻿using BackEnd_NET6.Models;
 using BackEnd_NET6.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackEnd_NET6.Controllers
 {
+
+    [ApiController]
+    [Authorize]    
     public class RpaController : Controller
     {
         private readonly I_Venda_Service _vendaService;
@@ -35,23 +39,7 @@ namespace BackEnd_NET6.Controllers
         [Route("api/rpa/atualizar-status-venda/{id}")]
 
         public IActionResult AtualizarStatusVenda(int id, [FromBody] StatusVenda status)
-        {
-            if (id <= 0)
-            {
-                return BadRequest(new
-                {
-                    mensagem = "Id inválido"
-                });
-            }
-
-            if (string.IsNullOrEmpty(status.ToString()))
-            {
-                return BadRequest(new
-                {
-                    mensagem = "Status inválido"
-                });
-            }
-
+        {             
             try
             {
                 _vendaService.AtualizarStatusVenda(id, status);

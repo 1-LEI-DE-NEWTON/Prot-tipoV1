@@ -47,7 +47,14 @@ namespace BackEnd_NET6.Services
 
         public List<Venda> ListarVendas()
         {
-            return _context.Vendas.ToList();
+            try
+            {
+                return _context.Vendas.ToList();
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Erro ao listar vendas: " + e.Message);
+            }            
         }
         
         public List<Venda> PesquisarVendasPorNome(string nome)
@@ -57,9 +64,16 @@ namespace BackEnd_NET6.Services
                 return null;
             }
             
-            return _context.Vendas
-                           .Where(v => v.NomeCliente.Contains(nome))
-                           .ToList();
+            try
+            {
+                return _context.Vendas
+                               .Where(v => v.NomeCliente.Contains(nome))
+                               .ToList();
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Erro ao pesquisar vendas por nome: " + e.Message);
+            }               
         }
 
         public Venda PesquisarVendaPorId(int id)
@@ -68,9 +82,15 @@ namespace BackEnd_NET6.Services
             {
                 return null;
             }
-            
-            return _context.Vendas
-                           .FirstOrDefault(v => v.Id == id);
+            try
+            {
+                return _context.Vendas
+                               .FirstOrDefault(v => v.Id == id);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Erro ao pesquisar venda por id: " + e.Message);
+            }
         }
         
         public Venda PesquisarVendaPorCPF(string cpf)
@@ -80,8 +100,15 @@ namespace BackEnd_NET6.Services
                 return null;
             }
 
-            return _context.Vendas
-                           .FirstOrDefault(v => v.CPF == cpf);
+            try
+            {
+                return _context.Vendas
+                               .FirstOrDefault(v => v.CPF == cpf);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Erro ao pesquisar venda por CPF: " + e.Message);
+            }            
         }
                 
         public Venda PesquisarVendaPorTelefone(string telefone)
@@ -90,8 +117,15 @@ namespace BackEnd_NET6.Services
             {
                 return null;
             }
-            return _context.Vendas
-                           .FirstOrDefault(v => v.Telefone == telefone);
+            try
+            {
+                return _context.Vendas
+                               .FirstOrDefault(v => v.Telefone == telefone);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Erro ao pesquisar venda por telefone: " + e.Message);
+            }            
         }
 
         public void AtualizarVenda(int id, VendaDTO vendaDTO)
@@ -128,25 +162,40 @@ namespace BackEnd_NET6.Services
         }
 
         public void AtualizarStatusVenda(int id, StatusVenda status)
-        {
-            var venda = _context.Vendas.FirstOrDefault(v => v.Id == id);
-
-            if (venda == null)
+        {                        
+            if (id <= 0)
             {
-                throw new Exception("Venda não encontrada");
+                throw new Exception("Id inválido");
             }
 
-            venda.Status = status;
+            if (string.IsNullOrEmpty(status.ToString()))
+            {
+                throw new Exception("Status inválido");
+            }
+        
+            if (!Enum.IsDefined(typeof(StatusVenda), status))
+            {
+                throw new Exception("Status inválido");
+            }
 
             try
             {
+                var venda = _context.Vendas.FirstOrDefault(v => v.Id == id);
+
+                if (venda == null)
+                {
+                    throw new Exception("Venda não encontrada");
+                }
+
+                venda.Status = status;
+
                 _context.Vendas.Update(venda);
                 _context.SaveChanges();
             }
             catch (Exception e)
             {
                 throw new Exception("Erro ao atualizar status da venda: " + e.Message);
-            }
+            }                        
         }
 
         public List<Venda> ListarVendasNaFila()
