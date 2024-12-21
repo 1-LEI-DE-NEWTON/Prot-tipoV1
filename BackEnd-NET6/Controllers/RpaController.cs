@@ -29,9 +29,7 @@ namespace BackEnd_NET6.Controllers
             }
 
             return Ok(vendas);
-        }
-
-        //atualizar status da venda
+        }        
 
         [HttpPut]
         [Route("api/rpa/atualizar-status-venda/{id}")]
