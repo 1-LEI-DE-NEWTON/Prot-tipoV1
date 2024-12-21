@@ -11,5 +11,6 @@ namespace BackEnd_NET6.Services.Interfaces
         Venda PesquisarVendaPorCPF(string cpf);
         Venda PesquisarVendaPorTelefone(string telefone);
         Venda PesquisarVendaPorId(int id);
+        void AtualizarVenda(Venda venda);
     }
 }

@@ -93,5 +93,44 @@ namespace BackEnd_NET6.Services
             return _context.Vendas
                            .FirstOrDefault(v => v.Telefone == telefone);
         }
+
+        public void AtualizarVenda(Venda venda)
+        {
+            if (venda == null)
+            {
+                throw new Exception("Venda não encontrada");
+            }            
+
+            var vendaDB = _context.Vendas
+                                  .FirstOrDefault(v => v.Id == venda.Id);
+
+            if (vendaDB == null)
+            {
+                throw new Exception("Venda não encontrada");
+            }            
+
+            vendaDB.NomeCliente = venda.NomeCliente;
+            vendaDB.Email = venda.Email;
+            vendaDB.Telefone = venda.Telefone;
+            vendaDB.IsWhatsApp = venda.IsWhatsApp;
+            vendaDB.CPF = venda.CPF;
+            vendaDB.RG = venda.RG;
+            vendaDB.DataNascimento = venda.DataNascimento;
+            vendaDB.CEP = venda.CEP;
+            vendaDB.Endereco = venda.Endereco;
+            vendaDB.Numero = venda.Numero;
+            vendaDB.Complemento = venda.Complemento;
+            vendaDB.DataVencimento = venda.DataVencimento;
+
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Erro ao atualizar venda: " + e.Message);
+            }
+                                            
+        }
     }        
 }
