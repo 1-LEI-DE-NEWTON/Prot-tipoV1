@@ -21,6 +21,7 @@ namespace BackEnd_NET6.Services
                 NomeCliente = vendaDTO.NomeCliente,
                 Email = vendaDTO.Email,
                 Telefone = vendaDTO.Telefone,
+                IsWhatsApp = vendaDTO.IsWhatsApp,
                 CPF = vendaDTO.CPF,
                 RG = vendaDTO.RG,                                
                 DataNascimento = vendaDTO.DataNascimento.Date,

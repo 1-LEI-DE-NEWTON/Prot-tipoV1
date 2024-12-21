@@ -5,7 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nova Venda</title>
     <link rel="stylesheet" href="styles/nova_venda.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Estilo do container do toggle switch */
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-label {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: #555;
+            cursor: pointer; /* Permite clicar no texto */
+        }
+
+        .toggle-input {
+            display: none;
+        }
+
+        .toggle-slider {
+            position: relative;
+            width: 40px;
+            height: 20px;
+            background-color: #ccc;
+            border-radius: 10px;
+            cursor: pointer; /* Permite clicar no botão */
+            transition: background-color 0.3s ease;
+        }
+
+        .toggle-slider::before {
+            content: "";
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background-color: white;
+            border-radius: 50%;
+            top: 1px;
+            left: 1px;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-input:checked + .toggle-slider {
+            background-color: #4CAF50;
+        }
+
+        .toggle-input:checked + .toggle-slider::before {
+            transform: translateX(20px);
+        }
+
+        /* Ajustando layout para input e toggle na mesma linha */
+        .form-group-inline {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+    </style>    
 </head>
 <body>
     <div class="container">
@@ -21,11 +77,19 @@
                 </div>
             </div>
             
-            <div class="form-group">
-                <label for="telefone">Telefone</label>
-                <div class="input-container">
-                    <i class="fas fa-phone"></i>
-                    <input type="text" id="telefone" name="telefone" class="form-control" placeholder="Digite o telefone" required>
+            <!-- Campo Telefone com Toggle -->
+            <div class="form-group-inline">
+                <div class="form-group">
+                    <label for="telefone">Telefone</label>
+                    <div class="input-container">
+                        <i class="fas fa-phone"></i>
+                        <input type="text" id="telefone" name="telefone" class="form-control" placeholder="Digite o telefone" required>
+                    </div>                    
+                </div>
+                <div class="toggle-switch">
+                    <input type="checkbox" id="is-whatsapp" name="is-whatsapp" class="toggle-input">
+                    <label for="is-whatsapp" class="toggle-slider"></label>
+                    <label for="is-whatsapp" class="toggle-label">É WhatsApp?</label>
                 </div>
             </div>
             

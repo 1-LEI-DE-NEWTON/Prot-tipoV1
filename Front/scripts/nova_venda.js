@@ -1,10 +1,13 @@
 document.getElementById("nova-venda-form").addEventListener("submit", async (event) => {
     event.preventDefault();
     
+    const isWhatsapp = document.getElementById('is-whatsapp').checked;
+
     // Coletar os dados do formulário
     const venda = {
         nomeCliente: document.getElementById('nome_cliente').value,
         telefone: document.getElementById('telefone').value,
+        isWhatsapp: isWhatsapp,        
         email: document.getElementById('email').value,
         cpf: document.getElementById('cpf').value,
         rg: document.getElementById('rg').value,
