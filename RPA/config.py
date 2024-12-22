@@ -1,15 +1,20 @@
+from dotenv import load_dotenv
+import os
+
+# Carrega as variáveis de ambiente do arquivo .env
+load_dotenv()
 
 # Configurações do Site de Terceiros
 SITE_CONFIG = {
-    "url": "https://www.site-do-terceiro.com",  
-    "login_endpoint": "/login",                
-    "form_endpoint": "/formulario",            
+    "url": os.getenv("SITE_URL"),  
+    "login_endpoint": os.getenv("SITE_LOGIN_URL"),
+    "cadastro_cliente_endpoint": os.getenv("SITE_CADASTRO_CLIENTE_URL"),    
 }
 
 # Credenciais de Acesso
 CREDENTIALS = {
-    "username": "seu_usuario",                
-    "password": "sua_senha"                   
+    "username": os.getenv("SITE_LOGIN_USER"),
+    "password": os.getenv("SITE_LOGIN_PASSWORD"),                    
 }
 
 # Configurações de Tempo de Espera
@@ -22,8 +27,7 @@ WAIT_CONFIG = {
 API_CONFIG = {
     "base_url": "https://localhost:7223/api/",    
     "get_queue_endpoint": "rpa/obter-fila-vendas",    
-    "update_status_endpoint": "rpa/atualizar-status-venda/{id}",
-    "auth_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdGUiLCJleHAiOjE3MzQ4MDEwNzAsImlzcyI6Im15YXBwIiwiYXVkIjoibXlhcHB1c2VycyJ9.PqGhtdJ2dpwN5YEU0wJlvxzLjoOysZpChx6zGsfEpJo",           
+    "update_status_endpoint": "rpa/atualizar-status-venda/{id}"    
 }
 
 # Configurações do RPA

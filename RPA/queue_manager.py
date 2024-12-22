@@ -1,8 +1,11 @@
 import requests
 import logging
+import os
 from config import API_CONFIG
+from dotenv import load_dotenv
 
-# Inicializa o log
+load_dotenv()
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class QueueManager:
@@ -10,20 +13,34 @@ class QueueManager:
         self.base_url = API_CONFIG["base_url"]
         self.get_queue_endpoint = API_CONFIG["get_queue_endpoint"]
         self.update_status_endpoint = API_CONFIG["update_status_endpoint"]
-        self.auth_token = API_CONFIG["auth_token"]
+        self.auth_token = self.authenticate()
 
-    def _get_headers(self):
-        """Retorna os cabeçalhos de autenticação para as requisições."""
+    def _get_headers(self):        
         return {
             "Authorization": f"Bearer {self.auth_token}",
             "Content-Type": "application/json"
         }
 
-    def fetch_queue(self):
-        """Busca tarefas na fila de vendas."""
+    def authenticate(self):        
+        auth_url = f"{self.base_url}login"
+        credentials = {
+            "username": os.getenv("API_USER"),
+            "password": os.getenv("API_PASSWORD")
+        }        
+        try:
+            response = requests.post(auth_url, json=credentials, verify=False)
+            response.raise_for_status()
+            token = response.json().get("token")
+            logging.info("Autenticação bem-sucedida.")
+            return token
+        except requests.RequestException as e:
+            logging.error(f"Erro ao autenticar: {e}")
+            return None
+
+    def fetch_queue(self):        
         try:
             url = f"{self.base_url}{self.get_queue_endpoint}"
-            response = requests.get(url, headers=self._get_headers(), verify=False)  # Desabilita a verificação do certificado SSL
+            response = requests.get(url, headers=self._get_headers(), verify=False)
             response.raise_for_status()
             vendas = response.json()
             logging.info(f"Fila carregada: {len(vendas)} vendas na fila.")
@@ -32,11 +49,13 @@ class QueueManager:
             logging.error(f"Erro ao carregar fila: {e}")
             return []
 
-    def update_status(self, venda_id, status):
-        """Atualiza o status de uma venda na API."""
+    def update_status(self, venda_id, status):        
         try:
-            url = f"{self.base_url}{self.update_status_endpoint.format(id=venda_id)}"            
-            response = requests.put(url, headers=self._get_headers(), json=status, verify=False)  # Desabilita a verificação do certificado SSL
+            url = f"{self.base_url}{self.update_status_endpoint.format(id=venda_id)}"
+            payload = {
+                "status": status
+            }
+            response = requests.put(url, headers=self._get_headers(), json=payload, verify=False)
             response.raise_for_status()
             logging.info(f"Venda {venda_id} atualizada para status '{status}'.")
             return True
@@ -44,8 +63,7 @@ class QueueManager:
             logging.error(f"Erro ao atualizar status da venda {venda_id}: {e}")
             return False
 
-    def process_queue(self):
-        """Processa todas as tarefas na fila."""
+    def process_queue(self):        
         vendas = self.fetch_queue()
         for venda in vendas:
             venda_id = venda["id"]
@@ -61,7 +79,7 @@ class QueueManager:
             except Exception as e:
                 # Atualiza o status para "Erro" em caso de falha
                 logging.error(f"Erro ao processar venda {venda_id}: {e}")
-                self.update_status(venda_id, 3)                
+                self.update_status(venda_id, 3, detalhes=str(e))
 
     def _process_venda(self, venda):
         """
