@@ -8,9 +8,36 @@ from config import WAIT_CONFIG
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class ScreenIdentifier:
-    def __init__(self, driver):
-        """Inicializa com o driver do Selenium."""
+    def __init__(self, driver):        
         self.driver = driver
+
+    def identificar_cpf_ja_cadastrado(self):        
+        try:
+            logging.info("Verificando se o CPF já está cadastrado.")
+            cpf_duplicado_element = WebDriverWait(self.driver, WAIT_CONFIG["default_wait"]).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, 'mat-error'))
+            )
+            if "Já existe cadastro vinculado ao documento informado" in cpf_duplicado_element.text:
+                logging.warning("CPF já cadastrado detectado.")
+                return True
+            else:
+                logging.info("CPF não cadastrado.")
+                return False
+        except Exception as e:
+            logging.error(f"Erro ao verificar CPF cadastrado: {e}")
+            return False
+    
+    def identificar_cpf_invalido(self):
+        try:
+            logging.info("Verificando se o CPF é inválido.")
+            if "CPF inválido" in self.driver.page_source:
+                logging.warning("CPF inválido detectado.")
+                return True
+            else:
+                logging.info("CPF válido.")
+                return False
+        except Exception as e:
+            logging.error(f"Erro ao verificar CPF inválido: {e}")            
 
     def identificar_tela(self):
         """
@@ -22,7 +49,12 @@ class ScreenIdentifier:
         - 'indefinido': Nenhum estado conhecido detectado.
         """
         try:
-            # Verifica se a tela de sucesso está presente
+             # Verifica se há mensagem de erro no DOM
+            if self._is_element_present(By.CSS_SELECTOR, 'mat-error') and "Já existe cadastro vinculado ao documento informado" in self.driver.page_source:
+                logging.warning("Tela de erro detectada: CPF já cadastrado.")
+                return "erro"
+
+
             if self._is_element_present(By.ID, "sucesso"):
                 logging.info("Tela de sucesso identificada.")
                 return "sucesso"

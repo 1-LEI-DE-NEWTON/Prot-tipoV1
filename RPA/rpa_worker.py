@@ -45,28 +45,33 @@ class RPAWorker:
             logging.error(f"Erro durante o login: {e}")
             raise
 
-    def processar_venda(self, venda):
-        """Preenche os dados da venda no site."""
+    def cadastro_cliente(self, venda):        
         try:
             logging.info(f"Preenchendo dados para venda ID {venda['id']}.")
+            
+            self.driver.get(os.getenv("SITE_CADASTRO_CLIENTE_URL"))                                    
 
-            # Navega para o formulário de vendas
-            self.driver.get(os.getenv("SITE_CADASTRO_CLIENTE_URL"))
-
-            # Preenche os campos
-            #self._preencher_campo(By.ID, "nome_cliente", venda["nomeCliente"])
-            #self._preencher_campo(By.ID, "telefone", venda["telefone"])
             self._preencher_campo(By.CSS_SELECTOR, '[aria-label="CPF"]', venda["cpf"])
-            #self._preencher_campo(By.ID, "valor", str(venda["valor"]))
-
-            # Submete o formulário
-            self.driver.find_element(By.CSS_SELECTOR, 'button[type="submit"]').click()
+                        
+            #Clica em algum lugar fora da textbox para que o campo de CPF seja validado
+            self.driver.find_element(By.CSS_SELECTOR, 'body').click()
+                        
+            if self.screen_identifier.identificar_cpf_invalido():
+                logging.warning("CPF inválido.")
+                return            
+        
+            self.driver.find_element(By.CSS_SELECTOR, 'button.mat-raised-button.mat-primary').click()
+            
+            if self.screen_identifier.identificar_cpf_ja_cadastrado():
+                logging.warning("CPF já cadastrado. Pulando para cadastro de venda.")
+                ### logica para pular para cadastro de venda
+                return
 
             # Identifica o resultado
             self._identificar_tela()
         except Exception as e:
             logging.error(f"Erro ao processar venda {venda['id']}: {e}")
-            raise
+            raise            
 
     def _preencher_campo(self, by, identifier, value):
         """Preenche um campo do formulário."""
@@ -76,28 +81,6 @@ class RPAWorker:
         campo.clear()
         campo.send_keys(value)
         logging.info(f"Campo {identifier} preenchido com: {value}")
-
-    def _identificar_tela(self):
-        """
-        Identifica e lida com a tela retornada após o envio do formulário.
-        """
-        tela = self.screen_identifier.identificar_tela()
-
-        if tela == "sucesso":
-            logging.info("Venda processada com sucesso.")
-            return "sucesso"
-        elif tela == "erro":
-            logging.warning("Erro identificado. Tentando corrigir...")
-            if self.screen_identifier.corrigir_erro():
-                return "erro corrigido"
-            else:
-                raise Exception("Erro não corrigido.")
-        elif tela == "alternativa":
-            logging.info("Fluxo alternativo detectado. Ajustando...")
-            # Implemente a lógica para o fluxo alternativo aqui, se necessário
-            return "alternativa"
-        else:
-            raise Exception("Tela indefinida após o envio.")
 
     def _corrigir_erro(self):
         """Lida com erros identificados durante o processamento."""
@@ -118,10 +101,10 @@ class RPAWorker:
 if __name__ == "__main__":
     worker = RPAWorker()
     worker.login()
-    worker.processar_venda({
+    worker.cadastro_cliente({
         "id": 1,
         "nomeCliente": "João da Silva",
         "telefone": "11999999999",
-        "cpf": "12345678901",
+        "cpf": "12345678900",
         "valor": 100.00
     })
