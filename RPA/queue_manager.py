@@ -3,6 +3,7 @@ import logging
 import os
 from config import API_CONFIG
 from dotenv import load_dotenv
+from auth_api import AuthAPI
 
 load_dotenv()
 
@@ -13,34 +14,13 @@ class QueueManager:
         self.base_url = API_CONFIG["base_url"]
         self.get_queue_endpoint = API_CONFIG["get_queue_endpoint"]
         self.update_status_endpoint = API_CONFIG["update_status_endpoint"]
-        self.auth_token = self.authenticate()
-
-    def _get_headers(self):        
-        return {
-            "Authorization": f"Bearer {self.auth_token}",
-            "Content-Type": "application/json"
-        }
-
-    def authenticate(self):        
-        auth_url = f"{self.base_url}login"
-        credentials = {
-            "username": os.getenv("API_USER"),
-            "password": os.getenv("API_PASSWORD")
-        }        
-        try:
-            response = requests.post(auth_url, json=credentials, verify=False)
-            response.raise_for_status()
-            token = response.json().get("token")
-            logging.info("Autenticação bem-sucedida.")
-            return token
-        except requests.RequestException as e:
-            logging.error(f"Erro ao autenticar: {e}")
-            return None
+        self.auth_token = AuthAPI().authenticate()
+        self.get_headers = AuthAPI()._get_headers()
 
     def fetch_queue(self):        
         try:
             url = f"{self.base_url}{self.get_queue_endpoint}"
-            response = requests.get(url, headers=self._get_headers(), verify=False)
+            response = requests.get(url, headers=self.get_headers, verify=False)
             response.raise_for_status()
             vendas = response.json()
             logging.info(f"Fila carregada: {len(vendas)} vendas na fila.")
@@ -55,7 +35,7 @@ class QueueManager:
             payload = {
                 "status": status
             }
-            response = requests.put(url, headers=self._get_headers(), json=payload, verify=False)
+            response = requests.put(url, headers=self.get_headers, json=payload, verify=False)
             response.raise_for_status()
             logging.info(f"Venda {venda_id} atualizada para status '{status}'.")
             return True

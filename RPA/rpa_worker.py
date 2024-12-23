@@ -52,7 +52,7 @@ class RPAWorker:
 
     def cadastro_cliente(self, venda):        
         try:
-            logging.info(f"Preenchendo dados para venda ID {venda['id']}.")
+            logging.info(f"Preenchendo dados cliente para venda ID {venda['id']}.")
             
             self.driver.get(os.getenv("SITE_CADASTRO_CLIENTE_URL"))                                    
 
@@ -82,29 +82,27 @@ class RPAWorker:
 
     def entrada_venda(self, venda):                
         try:
-            logging.info(f"Entrando com a venda ID {venda['id']}.")
+            logging.info(f"Processando cadastro de venda, ID {venda['id']}.")
             self.driver.get(os.getenv("SITE_ENTRADA_VENDAS_URL"))
 
             self._preencher_campo(By.CSS_SELECTOR, '[aria-label="CPF"]', venda["cpf"])                        
-           
-            # Aguarda a exibição da lista de resultados
+                       
             resultados = WebDriverWait(self.driver, WAIT_CONFIG["default_wait"]).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, '.client-identification__results')))
-
-            # Aguarda o primeiro item da lista de resultados estar clicável
+            
             primeiro_item = WebDriverWait(resultados, WAIT_CONFIG["default_wait"]).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, '.client-identification__results button.d-flex.flex-column')))
-
-            # Clica no primeiro item da lista
+            
             primeiro_item.click()     
 
-            self.driver.find_element(By.CSS_SELECTOR, 'button.mat-raised-button.mat-primary').click()
+            #Prossegue com o cliente selecionado
+            self.driver.find_element(By.CSS_SELECTOR, 'button.mat-raised-button.mat-primary').click()            
 
-            self._preencher_campo(By.ID, "nomeCliente", venda["nomeCliente"])
-            self._preencher_campo(By.ID, "telefone", venda["telefone"])
-            self._preencher_campo(By.ID, "valor", venda["valor"])
-            self.driver.find_element(By.ID, "botao_vender").click()
-            self._identificar_tela()
+            #Prossegue com os dados do cliente
+            self.driver.find_element(By.CSS_SELECTOR, 'button.mat-raised-button.mat-primary').click()
+                
+            self._preencher_campo(By.CSS_SELECTOR, '[aria-label="ICCID inicial"]', "INSERIR INICIAL")
+
         except Exception as e:
             logging.error(f"Erro ao processar venda {venda['id']}: {e}")
             raise
