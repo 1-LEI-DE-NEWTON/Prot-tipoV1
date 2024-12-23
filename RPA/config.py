@@ -8,7 +8,8 @@ load_dotenv()
 SITE_CONFIG = {
     "url": os.getenv("SITE_URL"),  
     "login_endpoint": os.getenv("SITE_LOGIN_URL"),
-    "cadastro_cliente_endpoint": os.getenv("SITE_CADASTRO_CLIENTE_URL"),    
+    "cadastro_cliente_endpoint": os.getenv("SITE_CADASTRO_CLIENTE_URL"),
+    "entrada_venda_endpoint": os.getenv("SITE_ENTRADA_VENDA_URL")
 }
 
 # Credenciais de Acesso

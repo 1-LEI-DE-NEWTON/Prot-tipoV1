@@ -8,6 +8,8 @@ from screen_identification import ScreenIdentifier
 from config import SITE_CONFIG, WAIT_CONFIG
 from dotenv import load_dotenv
 
+
+# centralizar tudo no config. atualizar arquivos para remover o env
 load_dotenv()
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -20,7 +22,8 @@ class RPAWorker:
 
     def login(self):        
         try:
-            logging.info("Iniciando o login no site de terceiros.")            
+            logging.info("Iniciando o login no site de terceiros.")                        
+
             self.driver.get(SITE_CONFIG["login_endpoint"])
             self.driver.implicitly_wait(10)
             
@@ -35,6 +38,8 @@ class RPAWorker:
 
             passwordField.send_keys(os.getenv("SITE_LOGIN_PASSWORD"))
             
+            self.driver.implicitly_wait(10)
+
             self.driver.find_element(By.CSS_SELECTOR, 'button[type="submit"]').click()
 
             WebDriverWait(self.driver, WAIT_CONFIG["default_wait"]).until(
@@ -51,6 +56,8 @@ class RPAWorker:
             
             self.driver.get(os.getenv("SITE_CADASTRO_CLIENTE_URL"))                                    
 
+            self.driver.implicitly_wait(10)
+
             self._preencher_campo(By.CSS_SELECTOR, '[aria-label="CPF"]', venda["cpf"])
                         
             #Clica em algum lugar fora da textbox para que o campo de CPF seja validado
@@ -64,7 +71,7 @@ class RPAWorker:
             
             if self.screen_identifier.identificar_cpf_ja_cadastrado():
                 logging.warning("CPF já cadastrado. Pulando para cadastro de venda.")
-                ### logica para pular para cadastro de venda
+                self.entrada_venda(venda)
                 return
 
             # Identifica o resultado
@@ -72,6 +79,35 @@ class RPAWorker:
         except Exception as e:
             logging.error(f"Erro ao processar venda {venda['id']}: {e}")
             raise            
+
+    def entrada_venda(self, venda):                
+        try:
+            logging.info(f"Entrando com a venda ID {venda['id']}.")
+            self.driver.get(os.getenv("SITE_ENTRADA_VENDAS_URL"))
+
+            self._preencher_campo(By.CSS_SELECTOR, '[aria-label="CPF"]', venda["cpf"])                        
+           
+            # Aguarda a exibição da lista de resultados
+            resultados = WebDriverWait(self.driver, WAIT_CONFIG["default_wait"]).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, '.client-identification__results')))
+
+            # Aguarda o primeiro item da lista de resultados estar clicável
+            primeiro_item = WebDriverWait(resultados, WAIT_CONFIG["default_wait"]).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, '.client-identification__results button.d-flex.flex-column')))
+
+            # Clica no primeiro item da lista
+            primeiro_item.click()     
+
+            self.driver.find_element(By.CSS_SELECTOR, 'button.mat-raised-button.mat-primary').click()
+
+            self._preencher_campo(By.ID, "nomeCliente", venda["nomeCliente"])
+            self._preencher_campo(By.ID, "telefone", venda["telefone"])
+            self._preencher_campo(By.ID, "valor", venda["valor"])
+            self.driver.find_element(By.ID, "botao_vender").click()
+            self._identificar_tela()
+        except Exception as e:
+            logging.error(f"Erro ao processar venda {venda['id']}: {e}")
+            raise
 
     def _preencher_campo(self, by, identifier, value):
         """Preenche um campo do formulário."""
