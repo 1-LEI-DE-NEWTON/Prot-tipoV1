@@ -38,6 +38,79 @@ class ScreenIdentifier:
         except Exception as e:
             logging.error(f"Erro ao verificar CPF inválido: {e}")            
 
+    def verificar_pop_up(self):
+        """
+        Verifica se há um pop-up positivo ou negativo exibido no site.
+        Retorna:
+            - 'positivo': Se um pop-up positivo for identificado.
+            - 'negativo': Se um pop-up negativo for identificado.
+            - None: Se nenhum pop-up relevante for encontrado.
+        """
+        try:            
+            pop_up_positivo = self._is_element_present(By.CSS_SELECTOR, '.alert.alert-success')
+            if pop_up_positivo:
+                mensagem = self.driver.find_element(By.CSS_SELECTOR, '.alert.alert-success span:nth-of-type(2)').text
+                logging.info(f"Pop-up positivo identificado: {mensagem}")
+                return True
+            
+            pop_up_negativo = self._is_element_present(By.CSS_SELECTOR, '.alert.alert-danger')
+            if pop_up_negativo:
+                mensagem = self.driver.find_element(By.CSS_SELECTOR, '.alert.alert-danger span:nth-of-type(2)').text
+                logging.warning(f"Pop-up negativo identificado: {mensagem}")
+                return False
+
+            # Nenhum pop-up encontrado
+            logging.info("Nenhum pop-up relevante encontrado.")
+            return None
+        except Exception as e:
+            logging.error(f"Erro ao verificar pop-ups: {e}")
+            return None
+
+
+    def selecionar_iccid_inserido(self):
+        try:
+            logging.info("Aguardando a lista de itens carregar.")
+                        
+            primeiro_item = WebDriverWait(self.driver, WAIT_CONFIG["default_wait"]).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, 'tr.mat-row:first-child mat-radio-button'))
+            )
+
+            primeiro_item.click()
+            logging.info("ICCId selecionado com sucesso.")
+            return True
+        
+        except Exception as e:
+            logging.error(f"Erro ao selecionar o ICCID: {e}")
+            raise
+
+#corrigir a partir daqui
+    def selecionar_ddd(self, ddd="85"):
+        try:
+            logging.info(f"Selecionando o DDD {ddd} na lista.")
+                
+            lista_ddd = WebDriverWait(self.driver, WAIT_CONFIG["default_wait"]).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, '.mat-select-arrow-wrapper'))
+            )
+
+            lista_ddd.click()
+            
+            #CORRIGIR A PARTIR DAQUI
+
+            # Aguarda e localiza o item correspondente ao DDD
+            opcao_ddd = WebDriverWait(self.driver, WAIT_CONFIG["default_wait"]).until(
+                EC.element_to_be_clickable((By.XPATH, f'//mat-option//span[contains(@class, "mat-option-text") and text()="{ddd}"]'))
+            )
+
+            # Clica no item correspondente
+            opcao_ddd.click()
+
+            logging.info(f"DDD {ddd} selecionado com sucesso.")
+        except Exception as e:
+            logging.error(f"Erro ao selecionar o DDD {ddd}: {e}")
+            raise
+
+
+
     def identificar_tela(self):
         """
         Identifica a tela atual com base em elementos do DOM.

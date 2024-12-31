@@ -1,5 +1,6 @@
 import logging
 import os
+import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -57,25 +58,29 @@ class RPAWorker:
             self.driver.get(os.getenv("SITE_CADASTRO_CLIENTE_URL"))                                    
 
             self.driver.implicitly_wait(10)
+                        
+            time.sleep(2)
 
             self._preencher_campo(By.CSS_SELECTOR, '[aria-label="CPF"]', venda["cpf"])
                         
             #Clica em algum lugar fora da textbox para que o campo de CPF seja validado
             self.driver.find_element(By.CSS_SELECTOR, 'body').click()
+
+            time.sleep(3)
                         
             if self.screen_identifier.identificar_cpf_invalido():
                 logging.warning("CPF inválido.")
                 return            
         
             self.driver.find_element(By.CSS_SELECTOR, 'button.mat-raised-button.mat-primary').click()
+
+            time.sleep(2)
             
             if self.screen_identifier.identificar_cpf_ja_cadastrado():
                 logging.warning("CPF já cadastrado. Pulando para cadastro de venda.")
                 self.entrada_venda(venda)
                 return
-
-            # Identifica o resultado
-            self._identificar_tela()
+                                    
         except Exception as e:
             logging.error(f"Erro ao processar venda {venda['id']}: {e}")
             raise            
@@ -92,16 +97,55 @@ class RPAWorker:
             
             primeiro_item = WebDriverWait(resultados, WAIT_CONFIG["default_wait"]).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, '.client-identification__results button.d-flex.flex-column')))
-            
+                        
+            time.sleep(3)
+
             primeiro_item.click()     
-
-            #Prossegue com o cliente selecionado
+            
             self.driver.find_element(By.CSS_SELECTOR, 'button.mat-raised-button.mat-primary').click()            
+            
+            WebDriverWait(self.driver, WAIT_CONFIG["default_wait"]).until(
+                EC.url_contains(os.getenv("SITE_VENDA_URL"))
+            )                                    
+                        
+            time.sleep(2)
 
-            #Prossegue com os dados do cliente
-            self.driver.find_element(By.CSS_SELECTOR, 'button.mat-raised-button.mat-primary').click()
-                
-            self._preencher_campo(By.CSS_SELECTOR, '[aria-label="ICCID inicial"]', "INSERIR INICIAL")
+            self.driver.find_element(By.CSS_SELECTOR, 'button.mat-raised-button.mat-primary').click()                                    
+
+            WebDriverWait(self.driver, WAIT_CONFIG["default_wait"]).until(
+                EC.url_contains(os.getenv("SITE_VENDA_CHIP_URL"))
+            )
+            
+            self._preencher_campo(By.CSS_SELECTOR, '[aria-label="ICCID inicial"]', venda["iccid_inicial"])
+            
+            # Necessario atualizar models, front, etc para incluir iccid            
+                        
+            inserir_button = WebDriverWait(self.driver, WAIT_CONFIG["default_wait"]).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.mat-stroked-button.mat-primary')))
+            inserir_button.click()            
+
+            if not self.screen_identifier.verificar_pop_up():
+                logging.info(f"Não foi possível validar o ICCID {venda['iccid_inicial']}")
+                return
+            
+            if not self.screen_identifier.selecionar_iccid_inserido():
+                logging.info(f"Não foi possível selecionar o ICCID na lista.")                
+                return
+                        
+            gerar_linha_button = WebDriverWait(self.driver, WAIT_CONFIG["default_wait"]).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.mat-stroked-button.mat-primary.mr-2')))
+            gerar_linha_button.click()
+
+            # Seleciona o DDD 
+            #CORRIGIR A PARTIR DAQUI
+            self.screen_identifier.selecionar_ddd("85")
+
+            time.sleep(10)
+
+
+
+            logging.info(f"Venda ID {venda['id']} processada com sucesso.")
+
 
         except Exception as e:
             logging.error(f"Erro ao processar venda {venda['id']}: {e}")
@@ -139,6 +183,7 @@ if __name__ == "__main__":
         "id": 1,
         "nomeCliente": "João da Silva",
         "telefone": "11999999999",
-        "cpf": "12345678900",
+        "cpf": os.getenv("CPF"),
+        "iccid_inicial": os.getenv("ICCID_INICIAL"),
         "valor": 100.00
     })
