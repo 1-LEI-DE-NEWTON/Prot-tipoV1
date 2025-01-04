@@ -2,6 +2,7 @@ namespace BackEnd_NET6.Models.DTOs
 {
     public class VendaDTO
     {                
+        // Necessário atualizar DTO para incluir ICCID, PDV e Vendedor
         public string NomeCliente { get; set; }
         public string Email { get; set; }
         public string Telefone { get; set; }
