@@ -3,6 +3,7 @@ using System;
 using BackEnd_NET6.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,32 +11,16 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackEnd_NET6.Migrations
 {
     [DbContext(typeof(VendaContext))]
-    partial class VendaContextModelSnapshot : ModelSnapshot
+    [Migration("20250112201409_CriarTabelaVendedores")]
+    partial class CriarTabelaVendedores
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.20")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
-
-            modelBuilder.Entity("BackEnd_NET6.Models.Plano", b =>
-                {
-                    b.Property<int>("PlanoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<decimal>("Valor")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.HasKey("PlanoId");
-
-                    b.ToTable("Planos");
-                });
 
             modelBuilder.Entity("BackEnd_NET6.Models.Usuario", b =>
                 {
@@ -112,9 +97,6 @@ namespace BackEnd_NET6.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("PlanoId")
-                        .HasColumnType("int");
-
                     b.Property<string>("RG")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -130,8 +112,6 @@ namespace BackEnd_NET6.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PlanoId");
 
                     b.HasIndex("VendedorId");
 
@@ -155,26 +135,13 @@ namespace BackEnd_NET6.Migrations
 
             modelBuilder.Entity("BackEnd_NET6.Models.Venda", b =>
                 {
-                    b.HasOne("BackEnd_NET6.Models.Plano", "Plano")
-                        .WithMany("Vendas")
-                        .HasForeignKey("PlanoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("BackEnd_NET6.Models.Vendedor", "Vendedor")
                         .WithMany("Vendas")
                         .HasForeignKey("VendedorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Plano");
-
                     b.Navigation("Vendedor");
-                });
-
-            modelBuilder.Entity("BackEnd_NET6.Models.Plano", b =>
-                {
-                    b.Navigation("Vendas");
                 });
 
             modelBuilder.Entity("BackEnd_NET6.Models.Vendedor", b =>

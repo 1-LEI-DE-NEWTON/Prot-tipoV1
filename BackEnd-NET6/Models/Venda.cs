@@ -21,9 +21,11 @@ namespace BackEnd_NET6.Models
         public int DataVencimento { get; set; }
         public int IccdInicial { get; set; }
         public int IccdFinal { get; set; }
-        public string Vendedor { get; set; }
-        public string Pdv { get; set; }
-                
+        public int VendedorId { get; set; }
+        public Vendedor Vendedor { get; set; }
+        public int PlanoId { get; set; }
+        public Plano Plano { get; set; }
+        public string Pdv { get; set; }                
         public StatusVenda Status { get; set; }
     }
 

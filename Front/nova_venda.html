@@ -157,6 +157,34 @@
                     <input type="number" id="data_vencimento" name="data_vencimento" class="form-control" placeholder="Digite o dia de vencimento" min="1" max="31" required>
                 </div>
             </div>
+                        
+                        <div class="form-group">
+                            <label for="iccid">ICCID</label>
+                            <div class="input-container">
+                                <i class="fas fa-sim-card"></i>
+                                <input type="text" id="iccid" name="iccid" class="form-control" placeholder="Digite o ICCID" pattern="\d*" required>
+                            </div>
+                        </div>
+                                    
+                        <div class="form-group">
+                            <label for="nome_vendedor">Nome do Vendedor</label>
+                            <div class="input-container">
+                                <i class="fas fa-user-tie"></i>
+                                <select id="nome_vendedor" name="nome_vendedor" class="form-control" required>
+                                    <option value="">Selecione o vendedor</option>                                    
+                                </select>
+                            </div>
+                        </div>
+                                    
+                        <div class="form-group">
+                            <label for="plano">Plano</label>
+                            <div class="input-container">
+                                <i class="fas fa-file-alt"></i>
+                                <select id="plano" name="plano" class="form-control" required>
+                                    <option value="">Selecione o plano</option>
+                                </select>
+                            </div>
+                        </div>
             
             <div class="form-group">
                 <button type="submit" class="btn-concluir">Concluir Venda</button>
