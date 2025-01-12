@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from config import WAIT_CONFIG
+from selenium.common.exceptions import TimeoutException
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -58,14 +59,12 @@ class ScreenIdentifier:
                 mensagem = self.driver.find_element(By.CSS_SELECTOR, '.alert.alert-danger span:nth-of-type(2)').text
                 logging.warning(f"Pop-up negativo identificado: {mensagem}")
                 return False
-
-            # Nenhum pop-up encontrado
+            
             logging.info("Nenhum pop-up relevante encontrado.")
             return None
         except Exception as e:
             logging.error(f"Erro ao verificar pop-ups: {e}")
             return None
-
 
     def selecionar_iccid_inserido(self):
         try:
@@ -83,7 +82,6 @@ class ScreenIdentifier:
             logging.error(f"Erro ao selecionar o ICCID: {e}")
             raise
 
-#corrigir a partir daqui
     def selecionar_ddd(self, ddd="85"):
         try:
             logging.info(f"Selecionando o DDD {ddd} na lista.")
@@ -92,24 +90,19 @@ class ScreenIdentifier:
                 EC.element_to_be_clickable((By.CSS_SELECTOR, '.mat-select-arrow-wrapper'))
             )
 
-            lista_ddd.click()
-            
-            #CORRIGIR A PARTIR DAQUI
+            lista_ddd.click()                        
 
             # Aguarda e localiza o item correspondente ao DDD
             opcao_ddd = WebDriverWait(self.driver, WAIT_CONFIG["default_wait"]).until(
-                EC.element_to_be_clickable((By.XPATH, f'//mat-option//span[contains(@class, "mat-option-text") and text()="{ddd}"]'))
-            )
+            EC.element_to_be_clickable((By.XPATH, f'//mat-option//span[contains(text(), "{ddd}")]'))
+        )            
 
-            # Clica no item correspondente
             opcao_ddd.click()
 
             logging.info(f"DDD {ddd} selecionado com sucesso.")
         except Exception as e:
             logging.error(f"Erro ao selecionar o DDD {ddd}: {e}")
             raise
-
-
 
     def identificar_tela(self):
         """

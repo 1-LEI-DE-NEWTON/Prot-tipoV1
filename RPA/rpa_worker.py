@@ -31,8 +31,10 @@ class RPAWorker:
             
             usernameField = WebDriverWait(self.driver, WAIT_CONFIG["default_wait"]).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, '[formcontrolname="userId"]'))
-            )                                                                                                        
+            )                                                                                                                    
             
+            time.sleep(2)
+
             usernameField.send_keys(os.getenv("SITE_LOGIN_USER"))
 
             passwordField = self.driver.find_element(By.CSS_SELECTOR, '[formcontrolname="password"]')
@@ -135,14 +137,23 @@ class RPAWorker:
             gerar_linha_button = WebDriverWait(self.driver, WAIT_CONFIG["default_wait"]).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.mat-stroked-button.mat-primary.mr-2')))
             gerar_linha_button.click()
-
-            # Seleciona o DDD 
-            #CORRIGIR A PARTIR DAQUI
+            
             self.screen_identifier.selecionar_ddd("85")
 
-            time.sleep(10)
+            # Aguarda a linha reservada ser gerada
+            time.sleep(4)
+            
+            reservar_button = WebDriverWait(self.driver, WAIT_CONFIG["default_wait"]).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.mat-raised-button.mat-primary[type="submit"]'))
+            )
+            reservar_button.click()            
 
+            proximo_button = WebDriverWait(self.driver, WAIT_CONFIG["default_wait"]).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.mat-raised-button.mat-primary'))
+            )
+            proximo_button.click()
 
+            #Falta a parte dos planos
 
             logging.info(f"Venda ID {venda['id']} processada com sucesso.")
 
