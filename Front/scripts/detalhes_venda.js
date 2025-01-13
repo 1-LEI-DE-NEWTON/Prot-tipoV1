@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("data_vencimento").value = venda.dataVencimento;        
         
     } catch (error) {
-        alert("Erro ao carregar detalhes da venda: " + error.message);
+        alert("Erro ao carregar detalhes da venda: \n" + error.message);
     }
 });
 

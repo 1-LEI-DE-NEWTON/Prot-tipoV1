@@ -13,25 +13,27 @@ async function apiRequest(endpoint, method = "GET", body = null) {
         options.body = JSON.stringify(body);
     }
 
-    const response = await fetch(`${API_URL}/${endpoint}`, options);
+    try {
+        const response = await fetch(`${API_URL}/${endpoint}`, options);        
 
-    if (response.ok) {
-        try {
-            return await response.json();
-        } catch (error) {
-            console.error(`Erro na requisição para ${endpoint}:`, error);
-            throw new Error("Erro: " + error);
-        }        
-    } else if (response.status === 401) {     
-     console.error("Token expirado ou inválido. Redirecionando para a página de login.");
-     localStorage.removeItem("jwtToken");
-     jwtToken = "";
-     window.location.href = "login.html";
-    }    
-    else {
-        const errorMessage = await response.text();
-        console.error(`Erro na requisição para ${endpoint}:`, response.status, errorMessage);        
-        throw new Error("Erro: " + errorMessage + "\nStatus: " + response.status);
+        if (response.status === 401) {                 
+            localStorage.removeItem("jwtToken");
+            jwtToken = "";
+            window.location.href = "login.html";
+            throw new Error("Token expirado ou inválido. Redirecionando para a página de login.");
+        }
+
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            console.error(`Erro na requisição para ${endpoint}:`, response.status, errorMessage);
+            throw new Error(`Erro: ${errorMessage}\nStatus: ${response.status}`);
+        }
+        
+        return await response.json();
+        
+    } catch (error) {
+        console.error(`Erro ao contactar a API para ${endpoint}:`, error);
+        throw new Error(`Erro ao contactar a API: ${error.message}`);
     }
 }
 

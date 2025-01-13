@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const vendas = await apiRequest("servicos/listar");
         renderVendas(vendas);
     } catch (error) {
-        alert("Erro ao carregar histórico. Redirecionando para página de login. \nErro: " + error.message);
+        alert("Erro ao carregar histórico. Redirecionando para página de login.\n" + error.message);
     }
 
     const searchInput = document.getElementById('search-input');

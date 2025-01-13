@@ -17,6 +17,7 @@ namespace BackEnd_NET6.Controllers
         }
 
         [HttpGet]
+        [Route("api/planos/listar")]
         public async Task<IActionResult> GetVendedores()
         {
             var planos = await _context.Planos.ToListAsync();

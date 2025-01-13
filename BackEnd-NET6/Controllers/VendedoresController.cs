@@ -17,6 +17,7 @@ namespace BackEnd_NET6.Controllers
         }
 
         [HttpGet]
+        [Route("api/vendedores/listar")]
         public async Task<IActionResult> GetVendedores()
         {
             var vendedores = await _context.Vendedores.ToListAsync();

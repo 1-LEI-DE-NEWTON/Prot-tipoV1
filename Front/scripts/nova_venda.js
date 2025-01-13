@@ -7,8 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const now = new Date().getTime();
         return (now - lastUpdate) > ONE_DAY_IN_MS;
     }
-
-    // Função para popular a lista de vendedores
+    
     async function popularVendedores() {
         const lastUpdate = localStorage.getItem('vendedoresLastUpdate');
         const vendedores = localStorage.getItem('vendedores');
@@ -17,18 +16,17 @@ document.addEventListener('DOMContentLoaded', function() {
             populateSelect('nome_vendedor', JSON.parse(vendedores));
         } else {
             try {
-                const response = await fetch('URL_DA_API_VENDEDORES');
-                const data = await response.json();
+                const data = await apiRequest('vendedores/listar');                                                
                 localStorage.setItem('vendedores', JSON.stringify(data));
                 localStorage.setItem('vendedoresLastUpdate', new Date().getTime());
                 populateSelect('nome_vendedor', data);
             } catch (error) {
                 console.error('Erro ao carregar vendedores:', error);
+                alert('Erro ao carregar vendedores: \n' + error.message);
             }
         }
     }
-
-    // Função para popular a lista de planos
+    
     async function popularPlanos() {
         const lastUpdate = localStorage.getItem('planosLastUpdate');
         const planos = localStorage.getItem('planos');
@@ -37,13 +35,12 @@ document.addEventListener('DOMContentLoaded', function() {
             populateSelect('plano', JSON.parse(planos));
         } else {
             try {
-                const response = await fetch('URL_DA_API_PLANOS');
-                const data = await response.json();
+                const data = await apiRequest('planos/listar');                                                
                 localStorage.setItem('planos', JSON.stringify(data));
                 localStorage.setItem('planosLastUpdate', new Date().getTime());
                 populateSelect('plano', data);
             } catch (error) {
-                console.error('Erro ao carregar planos:', error);
+                alert('Erro ao carregar planos: \n' + error.message);
             }
         }
     }
@@ -51,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Função para popular um elemento select com dados
     function populateSelect(elementId, data) {
         const selectElement = document.getElementById(elementId);
+        console.log(selectElement);
         data.forEach(item => {
             const option = document.createElement('option');
             option.value = item.id;
@@ -58,8 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
             selectElement.appendChild(option);
         });
     }
-
-    // Chama as funções para popular as listas
+    
     popularVendedores();
     popularPlanos();
 });
